@@ -22,9 +22,9 @@ func (s stringsSlice) exists(item string) bool {
 	return found
 }
 
-var opciones = stringsSlice{"top", "bottom", "both"}
+var options = stringsSlice{"top", "bottom", "both"}
 
-var limites = [][2]int{
+var limits = [][2]int{
 	{20, 95},
 	{25, 90},
 	{25, 95},
@@ -47,23 +47,23 @@ func main() {
 		usageAndExit()
 	}
 
-	opcion := strings.ToLower(os.Args[1])
+	option := strings.ToLower(os.Args[1])
 
-	if !opciones.exists(opcion) {
+	if !options.exists(option) {
 		usageAndExit()
 	}
 
-	// días desde EPOCH
+	// days from EPOCH
 	dias := time.Now().Unix() / 24 * 3600
-	i := int(dias) % len(limites)
+	i := int(dias) % len(limits)
 
-	switch opcion {
+	switch option {
 	case "top":
-		fmt.Printf("%d\n", limites[i][1])
+		fmt.Printf("%d\n", limits[i][1])
 	case "bottom":
-		fmt.Printf("%d\n", limites[i][0])
+		fmt.Printf("%d\n", limits[i][0])
 	case "both":
-		fmt.Printf("%d %d\n", limites[i][0], limites[i][1])
+		fmt.Printf("%d %d\n", limits[i][0], limits[i][1])
 	}
 }
 
