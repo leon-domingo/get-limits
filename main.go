@@ -44,8 +44,9 @@ var limits = [][2]int{
 
 func main() {
 
-	// only executable and option is valid (2 args)
-	if len(os.Args) != 2 {
+	// only executable and options is valid (2 or 3 args)
+	argsLength := len(os.Args)
+	if argsLength < 2 || argsLength > 3 {
 		usageAndExit()
 	}
 
@@ -57,8 +58,22 @@ func main() {
 		usageAndExit()
 	}
 
+	// get the date from the command-line
+	var t time.Time
+	if argsLength > 2 {
+		var err error
+		theDate := os.Args[2]
+		t, err = time.Parse("20060102", theDate)
+		if err != nil {
+			usageAndExit()
+		}
+	} else {
+		// today
+		t = time.Now()
+	}
+
 	// days from epoch
-	daysFromEpoch := time.Now().Unix() / 24 * 3600
+	daysFromEpoch := t.Unix() / 24 * 3600
 	i := int(daysFromEpoch) % len(limits)
 
 	switch option {
@@ -73,5 +88,5 @@ func main() {
 
 // usageAndExit shows the usage of the command and exit the program with exit status = 1
 func usageAndExit() {
-	log.Fatal("usage: get-limits [top|bottom|both]")
+	log.Fatal("usage: get-limits <top|bottom|both> [<YYYMMDD>]")
 }
