@@ -60,8 +60,8 @@ func main() {
 
 	// get the date from the command-line
 	var t time.Time
+	var err error
 	if argsLength > 2 {
-		var err error
 		theDate := os.Args[2]
 		t, err = time.Parse("20060102", theDate)
 		if err != nil {
@@ -69,7 +69,15 @@ func main() {
 		}
 	} else {
 		// today
-		t = time.Now()
+		today := time.Now()
+		t, err = time.Parse("20060102",
+			fmt.Sprintf("%d%02d%02d",
+				today.Year(),
+				today.Month(),
+				today.Day()))
+		if err != nil {
+			usageAndExit()
+		}
 	}
 
 	// days from epoch
