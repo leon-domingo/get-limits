@@ -84,13 +84,15 @@ func main() {
 	daysFromEpoch := t.Unix() / 24 * 3600
 	i := int(daysFromEpoch) % len(limits)
 
+	bottom, top := limits[i][0], limits[i][1]
+
 	switch option {
 	case "top":
-		fmt.Printf("%d\n", limits[i][1])
+		fmt.Printf("%d\n", top)
 	case "bottom":
-		fmt.Printf("%d\n", limits[i][0])
+		fmt.Printf("%d\n", bottom)
 	case "both":
-		fmt.Printf("%d %d\n", limits[i][0], limits[i][1])
+		fmt.Printf("%d %d\n", top, bottom)
 	}
 }
 
