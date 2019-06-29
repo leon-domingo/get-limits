@@ -98,5 +98,5 @@ func main() {
 
 // usageAndExit shows the usage of the command and exit the program with exit status = 1
 func usageAndExit() {
-	log.Fatal("usage: get-limits <top|bottom|both> [<YYYMMDD>]")
+	log.Fatal("usage: get-limits <top|bottom|both> [<YYYYMMDD>]")
 }
