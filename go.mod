@@ -1,3 +1,3 @@
-module leon-domingo.com/get-limits
+module github.com/leon-domingo/get-limits
 
 go 1.12
