@@ -30,11 +30,12 @@ var limits = [][2]int{
 	{25, 90},
 	{25, 95},
 	{20, 98},
+	{1, 99},
 	{30, 95},
 	{25, 90},
 	{25, 95},
-	{10, 98},
 	{25, 95},
+	{10, 99},
 	{25, 90},
 	{30, 95},
 	{20, 90},
@@ -81,8 +82,8 @@ func main() {
 	}
 
 	// days from epoch
-	daysFromEpoch := t.Unix() / 24 * 3600
-	i := int(daysFromEpoch) % len(limits)
+	daysFromEpoch := t.Unix() / (24 * 3600)
+	i := daysFromEpoch % int64(len(limits))
 
 	bottom, top := limits[i][0], limits[i][1]
 
