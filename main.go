@@ -22,22 +22,26 @@ func (s stringsSlice) Exists(item string) bool {
 	return found
 }
 
-var options = stringsSlice{"top", "bottom", "both"}
+var options = stringsSlice{
+	"top",
+	"bottom",
+	"both",
+}
 
 // arbitrary values ranging from 10,20,25,30 (bottom) to 90,95,98 (top)
 var limits = [][2]int{
 	{20, 95},
 	{25, 90},
 	{25, 95},
-	{20, 98},
-	{1, 99},
-	{30, 95},
+	{20, 90},
+	{5, 99}, // recalibrate
+	{20, 95},
 	{25, 90},
-	{25, 95},
-	{25, 95},
-	{10, 99},
+	{22, 95},
 	{25, 90},
-	{30, 95},
+	{10, 93},
+	{25, 90},
+	{22, 95},
 	{20, 90},
 	{25, 95},
 	{20, 90},
