@@ -1,14 +1,23 @@
 package main
 
 import (
+	"bufio"
+	"encoding/json"
 	"fmt"
 	"log"
 	"os"
+	"path"
 	"strings"
 	"time"
 )
 
 type stringsSlice []string
+type batteryLimits [][2]int
+
+var defaultLimits = [][2]int{
+	{20, 95},
+	{25, 90},
+}
 
 func (s stringsSlice) Exists(item string) bool {
 	found := false
@@ -26,25 +35,6 @@ var options = stringsSlice{
 	"top",
 	"bottom",
 	"both",
-}
-
-// arbitrary values ranging from 10,20,25,30 (bottom) to 90,95,98 (top)
-var limits = [][2]int{
-	{20, 95},
-	{25, 90},
-	{25, 95},
-	{20, 90},
-	{5, 99}, // recalibrate
-	{20, 95},
-	{25, 90},
-	{22, 95},
-	{25, 90},
-	{10, 93},
-	{25, 90},
-	{22, 95},
-	{20, 90},
-	{25, 95},
-	{20, 90},
 }
 
 func main() {
@@ -85,10 +75,33 @@ func main() {
 		}
 	}
 
+	var limits batteryLimits
+
+	// read the JSON file containing the limits:
+	// arbitrary values ranging from 10,20,25,30 (bottom) to 90,95,98 (top)
+	limitsPath := path.Join(os.Getenv("HOME"), ".config/get-limits/limitsx.json")
+	limitsFile, err := os.Open(limitsPath)
+
+	if os.IsNotExist(err) {
+		// log.Printf("WARN: File \"%s\" does not exist\n", limitsPath)
+		limits = defaultLimits[:]
+	} else if err != nil {
+		log.Fatal(err)
+	}
+	defer limitsFile.Close()
+
+	var readerValues = bufio.NewReader(limitsFile)
+	var contenido []byte
+
+	readerValues.Read(contenido)
+	dec := json.NewDecoder(readerValues)
+
+	dec.Decode(&limits)
+
 	// days from epoch
 	daysFromEpoch := t.Unix() / (24 * 3600)
-	i := daysFromEpoch % int64(len(limits))
 
+	i := daysFromEpoch % int64(len(limits))
 	bottom, top := limits[i][0], limits[i][1]
 
 	switch option {
