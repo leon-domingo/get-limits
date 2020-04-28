@@ -79,7 +79,7 @@ func main() {
 
 	// read the JSON file containing the limits:
 	// arbitrary values ranging from 10,20,25,30 (bottom) to 90,95,98 (top)
-	limitsPath := path.Join(os.Getenv("HOME"), ".config/get-limits/limitsx.json")
+	limitsPath := path.Join(os.Getenv("HOME"), ".config/get-limits/limits.json")
 	limitsFile, err := os.Open(limitsPath)
 
 	if os.IsNotExist(err) {
