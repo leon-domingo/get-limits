@@ -11,6 +11,12 @@ import (
 	"time"
 )
 
+const (
+	optionTop    string = "top"
+	optionBottom string = "bottom"
+	optionBoth   string = "both"
+)
+
 type stringsSlice []string
 type batteryLimits [][2]int
 
@@ -27,33 +33,26 @@ func (s stringsSlice) Exists(item string) bool {
 			break
 		}
 	}
-
 	return found
 }
 
 var options = stringsSlice{
-	"top",
-	"bottom",
-	"both",
+	optionTop,
+	optionBottom,
+	optionBoth,
 }
 
 func main() {
-
-	// only executable and options is valid (2 or 3 args)
 	argsLength := len(os.Args)
 	if argsLength < 2 || argsLength > 3 {
 		usageAndExit()
 	}
 
-	// get the option from the command-line
 	option := strings.ToLower(os.Args[1])
-
-	// is it a valid option?
 	if !options.Exists(option) {
 		usageAndExit()
 	}
 
-	// get the date from the command-line
 	var t time.Time
 	var err error
 	if argsLength > 2 {
@@ -63,7 +62,6 @@ func main() {
 			usageAndExit()
 		}
 	} else {
-		// today
 		today := time.Now()
 		t, err = time.Parse("20060102",
 			fmt.Sprintf("%d%02d%02d",
@@ -77,13 +75,9 @@ func main() {
 
 	var limits batteryLimits
 
-	// read the JSON file containing the limits:
-	// arbitrary values ranging from 10,20,25,30 (bottom) to 90,95,98 (top)
 	limitsPath := path.Join(os.Getenv("HOME"), ".config/get-limits/limits.json")
 	limitsFile, err := os.Open(limitsPath)
-
 	if os.IsNotExist(err) {
-		// log.Printf("WARN: File \"%s\" does not exist\n", limitsPath)
 		limits = defaultLimits[:]
 	} else if err != nil {
 		log.Fatal(err)
@@ -94,27 +88,23 @@ func main() {
 	var contenido []byte
 
 	readerValues.Read(contenido)
-	dec := json.NewDecoder(readerValues)
+	limitsJSONDecoder := json.NewDecoder(readerValues)
+	limitsJSONDecoder.Decode(&limits)
 
-	dec.Decode(&limits)
-
-	// days from epoch
 	daysFromEpoch := t.Unix() / (24 * 3600)
-
-	i := daysFromEpoch % int64(len(limits))
-	bottom, top := limits[i][0], limits[i][1]
+	indexAccordingToDate := daysFromEpoch % int64(len(limits))
+	bottom, top := limits[indexAccordingToDate][0], limits[indexAccordingToDate][1]
 
 	switch option {
-	case "top":
+	case optionTop:
 		fmt.Printf("%d\n", top)
-	case "bottom":
+	case optionBottom:
 		fmt.Printf("%d\n", bottom)
-	case "both":
+	case optionBoth:
 		fmt.Printf("%d %d\n", top, bottom)
 	}
 }
 
-// usageAndExit shows the usage of the command and exit the program with exit status = 1
 func usageAndExit() {
 	log.Fatal("usage: get-limits <top|bottom|both> [<YYYYMMDD>]")
 }

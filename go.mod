@@ -1,3 +1,3 @@
 module github.com/leon-domingo/get-limits
 
-go 1.12
+go 1.15
